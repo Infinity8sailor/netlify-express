@@ -93,13 +93,26 @@ router.post("/docs/topics/", function (req, res) {
         var empty_topic_data = empty_topic;
         empty_topic_data.name = req.body.new_topic[0].toUpperCase()+ req.body.new_topic.slice(1);
         if (true){
-            collection.insertMany([
-              empty_topic_data
-            ], function(err, result) {
+            collection.insertMany([empty_topic_data], function(err, result) {
+                  assert.equal(err, null); 
+                  assert.equal(1, result.result.n);
+                  assert.equal(1, result.ops.length);
+                  console.log("Inserted 1 document into the collection");
+            });
+            collection.updateOne(
+              { "_id": "604bedb9e824210dec7d12f2" },
+            {
+                $push: {
+                    topics: {
+                    $each: [empty_topic_data.name],
+                    $position: -1
+                }
+            }
+        }, function(err, result) {
               assert.equal(err, null);
               assert.equal(1, result.result.n);
-              assert.equal(1, result.ops.length);
-              console.log("Inserted 1 document into the collection");
+              console.log("Updated the document with the field a equal to 2");
+              callback(result);
             });
         };
           // close db client
