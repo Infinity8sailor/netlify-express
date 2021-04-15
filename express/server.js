@@ -5,6 +5,7 @@ const serverless = require('serverless-http');
 const app = express();
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
+var ObjectId = require('mongodb').ObjectID;
 const assert = require('assert');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -100,7 +101,7 @@ router.post("/docs/topics/", function (req, res) {
                   console.log("Inserted 1 document into the collection");
             });
             collection.updateOne(
-              { "_id": "604bedb9e824210dec7d12f2" },
+              { "_id": ObjectId("604bedb9e824210dec7d12f2") },
             {
                 $push: {
                     topics: {
