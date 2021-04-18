@@ -99,6 +99,7 @@ router.post("/docs/topics/", function (req, res) {
                   assert.equal(1, result.result.n);
                   assert.equal(1, result.ops.length);
                   console.log("Inserted 1 document into the collection");
+                  
             });
             collection.updateOne(
               { "_id": ObjectId("604bedb9e824210dec7d12f2") },
@@ -113,7 +114,7 @@ router.post("/docs/topics/", function (req, res) {
               assert.equal(err, null);
               assert.equal(1, result.result.n);
               console.log("Updated the document with the field a equal to 2");
-              callback(result);
+              res.send("Success");
             });
         };
           // close db client
