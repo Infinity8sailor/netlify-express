@@ -121,7 +121,6 @@ router.post("/docs/newtopic/", function (req, res) {
           client.close();
         }
       });
-      // update_data(req.body);
     });
 
 router.post("/docs/update/", function (req, res) {
@@ -171,7 +170,7 @@ router.post("/docs/del/", function (req, res) {
         // Get collection
         const collection = db.collection('topics');
         // Find all documents in the collectio  
-        var topic = req.body;
+        var topic = req.body.topic_name;
         collection.deleteOne({ name : topic}, function(err, result) {
           assert.equal(err, null);
           assert.equal(1, result.result.n);
