@@ -180,7 +180,7 @@ router.post("/docs/del/", function (req, res) {
         collection.updateOne(
           { "_id": ObjectId("604bedb9e824210dec7d12f2") },
         {
-            $push: {
+            $pull: {
                 topics: topic
         }
     }, function(err, result) {
