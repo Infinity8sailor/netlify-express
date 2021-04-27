@@ -190,7 +190,6 @@ router.post("/docs/del/", function (req, res) {
           console.log("Updated the document with the field a equal to 2");
           res.send("Success");
         });
-    };
           // close db client
           client.close();
         }
