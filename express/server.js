@@ -81,7 +81,7 @@ router.post("/docs/topics/", function (req, res) {
     // update_data(req.body);
   });
   
-  router.post("/docs/newtopic/", function (req, res) {
+router.post("/docs/newtopic/", function (req, res) {
     console.log("res/req",res,req.body);
     //   res.sendFile('public/topics/'+req.body.fileName+'.json',{ root: __dirname+ '/..' });
     MongoClient.connect(url, function(err, client) {
@@ -124,7 +124,7 @@ router.post("/docs/topics/", function (req, res) {
       // update_data(req.body);
     });
 
-    router.post("/docs/update/", function (req, res) {
+router.post("/docs/update/", function (req, res) {
       console.log("res/req",res,req.body);
       //   res.sendFile('public/topics/'+req.body.fileName+'.json',{ root: __dirname+ '/..' });
       MongoClient.connect(url, function(err, client) {
@@ -160,7 +160,43 @@ router.post("/docs/topics/", function (req, res) {
         });
         // update_data(req.body);
       });
-
+      
+router.post("/docs/del/", function (req, res) {
+    console.log("res/req",res,req.body);
+    //   res.sendFile('public/topics/'+req.body.fileName+'.json',{ root: __dirname+ '/..' });
+    MongoClient.connect(url, function(err, client) {
+      if (!err) {
+        // Get db
+        const db = client.db(dbName);
+        // Get collection
+        const collection = db.collection('topics');
+        // Find all documents in the collectio  
+        var topic = req.body;
+        collection.deleteOne({ name : topic}, function(err, result) {
+          assert.equal(err, null);
+          assert.equal(1, result.result.n);
+          console.log("Removed the document with the field a equal to 3");
+          // callback(result);
+        });
+        collection.updateOne(
+          { "_id": ObjectId("604bedb9e824210dec7d12f2") },
+        {
+            $push: {
+                topics: topic
+        }
+    }, function(err, result) {
+          assert.equal(err, null);
+          assert.equal(1, result.result.n);
+          console.log("Updated the document with the field a equal to 2");
+          res.send("Success");
+        });
+    };
+          // close db client
+          client.close();
+        }
+      });
+      // update_data(req.body);
+    });
   // FUNCTIONS
   
     module.exports = app;
