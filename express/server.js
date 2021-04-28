@@ -32,6 +32,11 @@ app.use(cors());
 app.use(cookieParser());
 app.use(logger('dev'));
 app.use('/.netlify/functions/server', router);  // path must route to lambda
+app.all('/', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "https://docs-io.netlify.app/");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next()
+});
 app.use('/', (req, res) => res.sendFile(path.join(__dirname, '../index.html')));
 
 router.get('/', (req, res) => {
