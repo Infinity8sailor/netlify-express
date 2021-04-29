@@ -77,7 +77,7 @@ router.post("/docs/topics/", function (req, res) {
           if (!err) {
             // send output back
             // res.send(todos[0]);
-            res.send({"bug1":req.body.fileName, "data":todos[0]});
+            res.send({"bug1":req.body.fileName, "data1":todos[0]});
             console.log(todos[0]);
           }
         })};
