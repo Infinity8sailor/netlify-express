@@ -62,24 +62,25 @@ router.post("/docs/topics/", function (req, res) {
       // Get collection
       const collection = db.collection('topics');
       // Find all documents in the collection
-      // if (req.body.fileName == "Topics"){
-      //   collection.find({"info":"Topics"}).toArray(function(err, todos) {
-      //     if (!err) {
-      //       // send output back
-      //       res.send(todos[0]);
-      //       console.log(todos[0]);
-      //     }
-      //   });
-      // }
-      // else {
-      //   collection.find({"name":req.body.fileName}).toArray(function(err, todos) {
-      //     if (!err) {
-      //       // send output back
-      //       res.send(todos[0]);
-      //       console.log(todos[0]);
-      //     }
-      //   })};
-      res.send({"info":"things getting Fishy here"});
+      if (req.body.fileName == "Topics"){
+        collection.find({"info":"Topics"}).toArray(function(err, todos) {
+          if (!err) {
+            // send output back
+            // res.send(todos[0]);
+            res.send({"bug":req.body.fileName, "data":todos[0]});
+            console.log(todos[0]);
+          }
+        });
+      }
+      else {
+        collection.find({"name":req.body.fileName}).toArray(function(err, todos) {
+          if (!err) {
+            // send output back
+            // res.send(todos[0]);
+            res.send({"bug1":req.body.fileName, "data":todos[0]});
+            console.log(todos[0]);
+          }
+        })};
         // close db client
         client.close();
       }
@@ -178,7 +179,7 @@ router.post("/docs/del/", function (req, res) {
           console.log("Removed the document with the field a equal to 3");
           // callback(result);
         });
-
+        
         collection.updateOne(
           { "_id": ObjectId("608a66766f081e23647d21cd") },
         {
