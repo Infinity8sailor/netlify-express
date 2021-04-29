@@ -37,7 +37,7 @@ app.all('/', function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
   next()
 });
-app.use('/', (req, res) => res.sendFile(path.join(__dirname, '../index.html')));
+// app.use('/', (req, res) => res.sendFile(path.join(__dirname, '../index.html')));
 
 router.get('/', (req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/html' });
@@ -107,7 +107,7 @@ router.post("/docs/newtopic/", function (req, res) {
                   
             });
             collection.updateOne(
-              { "_id": ObjectId("604bedb9e824210dec7d12f2") },
+              { "_id": ObjectId("608a66766f081e23647d21cd") },
             {
                 $push: {
                     topics: {
@@ -183,7 +183,7 @@ router.post("/docs/del/", function (req, res) {
           // callback(result);
         });
         collection.updateOne(
-          { "_id": ObjectId("604bedb9e824210dec7d12f2") },
+          { "_id": ObjectId("608a66766f081e23647d21cd") },
         {
             $pull: {
                 topics: topic
