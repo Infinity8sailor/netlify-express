@@ -1,5 +1,6 @@
 'use strict';
 const express = require('express');
+const mongoose = require('mongoose');
 const path = require('path');
 const serverless = require('serverless-http');
 const app = express();
@@ -10,10 +11,16 @@ const assert = require('assert');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
+const dot = require('dotenv');
+dot.config();
+
+const routerAuth = require('./routes/auth');
 
 const dbName = 'docs-io';
 const url = '***REMOVED***test'; 
+const url_doc = '***REMOVED***docs-io'; 
 const router = express.Router();
+mongoose.connect(url_doc,{ useUnifiedTopology: true }, ()=>console.log("connected to db"));
 
 const empty_topic = {
     "name":"empty_topic",
@@ -28,6 +35,7 @@ const empty_topic = {
     };
 
 app.use(bodyParser.json());
+app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 app.use(logger('dev'));
@@ -39,6 +47,10 @@ app.all('/', function(req, res, next) {
 });
 // app.use('/', (req, res) => res.sendFile(path.join(__dirname, '../index.html')));
 
+app.use('/api/user', routerAuth);
+app.get('/api/user', (req,res)=>{
+  res.send("hello there");
+});
 router.get('/', (req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/html' });
   res.write('<h1>Hello from Express.js!!!!!!!!</h1>');
