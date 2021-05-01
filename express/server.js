@@ -47,7 +47,7 @@ app.all('/', function(req, res, next) {
 });
 // app.use('/', (req, res) => res.sendFile(path.join(__dirname, '../index.html')));
 
-app.use('/api/user', routerAuth);
+app.use('/.netlify/functions/server', routerAuth);
 app.get('/api/user', (req,res)=>{
   res.send("hello there");
 });
