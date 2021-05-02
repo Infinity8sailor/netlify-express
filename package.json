@@ -28,6 +28,7 @@
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",
+    "encoding": "^0.1.13",
     "google-auth-library": "^7.0.4",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
