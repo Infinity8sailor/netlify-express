@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const {registerValidator,loginValidator} = require('../modal/UserValidator');
 const User = require('../modal/User');
-const bcrypt =require('bcrypt');
+// const bcrypt =require('bcrypt');
 
 const jwt = require('jsonwebtoken');
 
@@ -51,8 +51,8 @@ router.post("/login",async (req, res)=>{
     if(!user) return res.status(400).send("email doesnt exist !");
     
     //check for correct password
-    const validpass = await bcrypt.compare(req.body.password, user.password)
-    if(!validpass) return res.status(400).send("password is wrong !");
+    // const validpass = await bcrypt.compare(req.body.password, user.password)
+    // if(!validpass) return res.status(400).send("password is wrong !");
     // if(!user.password ==req.body.password) return res.status(400).send("password is wrong !");
     
     // Create and assign a tocken
