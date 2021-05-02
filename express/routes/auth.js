@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const {registerValidator,loginValidator} = require('../modal/UserValidator');
 const User = require('../modal/User');
-const bcrypt =require('bcrypt');
+// const bcrypt =require('bcrypt');
 
 const jwt = require('jsonwebtoken');
 
@@ -18,14 +18,14 @@ router.post('/register',async (req,res)=> {
     if(emailExist) return res.status(400).send("email Already exist !");
 
     //incript  password
-    const salt = await bcrypt.genSalt(10);
-    const hashPassword = await bcrypt.hash(req.body.password, salt);
+    // const salt = await bcrypt.genSalt(10);
+    // const hashPassword = await bcrypt.hash(req.body.password, salt);
     
     // Creating New User
     const user = new User({
         name:req.body.name,
         email:req.body.email,
-        password : hashPassword // req.body.password
+        password :req.body.password //  hashPassword 
     }); 
     console.log(user);
     try {
@@ -48,8 +48,9 @@ router.post("/login",async (req, res)=>{
     if(!user) return res.status(400).send("email doesnt exist !");
     
     //check for correct password
-    const validpass = await bcrypt.compare(req.body.password, user.password)
-    if(!validpass) return res.status(400).send("password is wrong !");
+    // const validpass = await bcrypt.compare(req.body.password, user.password)
+    // if(!validpass) return res.status(400).send("password is wrong !");
+    if(!user.password ==req.body.password) return res.status(400).send("password is wrong !");
     
     // Create and assign a tocken
     console.log(process.env.JWT_KEY);
