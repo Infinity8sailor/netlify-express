@@ -15,6 +15,7 @@ const dot = require('dotenv');
 dot.config();
 
 const routerAuth = require('./routes/auth');
+const {google_auth, jwt_auth} = require('./routes/verifyToken');
 
 const dbName = 'docs-io';
 const url = '***REMOVED***test'; 
@@ -56,7 +57,7 @@ router.get('/', (req, res) => {
   res.write('<h1>Hello from Express.js!!!!!!!!</h1>');
   res.end();
 });
-router.get('/test', (req, res) => {
+router.get('/test',jwt_auth, (req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/html' });
   res.write('<h1>tesing is going on...!!!!!!!!</h1>');
   res.end();
@@ -78,8 +79,8 @@ router.post("/docs/topics/", function (req, res) {
         collection.find({"info":"Topics"}).toArray(function(err, todos) {
           if (!err) {
             // send output back
-            // res.send(todos[0]);
-            res.send({"bug":req.body.fileName, "data":todos[0]});
+            res.send(todos[0]);
+            // res.send({"bug":req.body.fileName, "data":todos[0]});
             console.log(todos[0]);
           }
         });
@@ -88,8 +89,8 @@ router.post("/docs/topics/", function (req, res) {
         collection.find({"name":req.body.fileName}).toArray(function(err, todos) {
           if (!err) {
             // send output back
-            // res.send(todos[0]);
-            res.send({"bug1":req.body.fileName, "data1":todos[0]});
+            res.send(todos[0]);
+            // res.send({"bug1":req.body.fileName, "data1":todos[0]});
             console.log(todos[0]);
           }
         })};

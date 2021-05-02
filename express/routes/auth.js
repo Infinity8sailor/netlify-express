@@ -40,11 +40,14 @@ router.post('/register',async (req,res)=> {
 
 // Loging Things here
 router.post("/login",async (req, res)=>{
+
+    // Validate data
     const {error} = loginValidator(req.body);
     if(error) return res.status(400).send(error.details[0].message);
     
     // Check User Exists
     const user = await User.findOne({email:req.body.email});
+    // if(!user) return res.status(400).send("email doesnt exist !");
     if(!user) return res.status(400).send("email doesnt exist !");
     
     //check for correct password
