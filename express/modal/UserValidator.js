@@ -16,8 +16,10 @@ const registerValidator = (data) => {
 const loginValidator = (data) => {
 
     const schema = Joi.object({
+        google_id:Joi.string().required(),
+        name : Joi.string().required(),
         email: Joi.string().min(6).required().email(),
-        password : Joi.string().min(6).required()
+        img_url: Joi.string().required(),
     }).options({ abortEarly: false });
     return schema.validate(data);
 };

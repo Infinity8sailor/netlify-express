@@ -65,7 +65,7 @@ router.get('/test',jwt_auth, (req, res) => {
 router.get('/another', (req, res) => res.json({ route: req.originalUrl }));
 router.post('/', (req, res) => res.json({ postBody: req.body }));
 
-router.post("/docs/topics/", function (req, res) {
+router.post("/docs/topics/", jwt_auth, function (req, res) {
   console.log("res/req",res,req.body);
   //   res.sendFile('public/topics/'+req.body.fileName+'.json',{ root: __dirname+ '/..' });
   MongoClient.connect(url, function(err, client) {
@@ -119,7 +119,6 @@ router.post("/docs/newtopic/", function (req, res) {
                   assert.equal(1, result.result.n);
                   assert.equal(1, result.ops.length);
                   console.log("Inserted 1 document into the collection");
-                  
             });
             collection.updateOne(
               { "_id": ObjectId("608a66766f081e23647d21cd") },

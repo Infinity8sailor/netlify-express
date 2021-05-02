@@ -21,6 +21,10 @@ const userScheme = new mongoose.Schema({
         type:String,
         required : true,
     },
+    topics : {
+        type : Array,
+        default : [["604bef3fb7d34333e049c33e","World"]]
+    },
     date:{
         type: Date,
         default: Date.now

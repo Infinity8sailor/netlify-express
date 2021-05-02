@@ -18,8 +18,8 @@ router.post('/register',async (req,res)=> {
     if(emailExist) return res.status(400).send("email Already exist !");
 
     //incript  password
-    const salt = await bcrypt.genSalt(10);
-    const hashPassword = await bcrypt.hash(req.body.password, salt);
+    // const salt = await bcrypt.genSalt(10);
+    // const hashPassword = await bcrypt.hash(req.body.password, salt);
     
     // Creating New User
     const user = new User({
@@ -48,7 +48,23 @@ router.post("/login",async (req, res)=>{
     // Check User Exists
     const user = await User.findOne({email:req.body.email});
     // if(!user) return res.status(400).send("email doesnt exist !");
-    if(!user) return res.status(400).send("email doesnt exist !");
+    if(!user) {
+         // Creating New User
+        const New_user = new User({
+            google_id:req.body.google_id,
+            name:req.body.name,
+            email:req.body.email,
+            img_url:req.body.img_url,
+            // password :hashPassword  //req.body.password //  
+        }); 
+        const userinfo = await New_user.save();
+        // res.send(userinfo);
+        const token = jwt.sign({_id:userinfo._id}, process.env.JWT_KEY,{
+            expiresIn: 86400 // expires in 24 hours
+          });
+        // res.json({'auth-token':token});
+        return res.json({"user":"created", 'login':"Success", "auth-token":token});
+    }
     
     //check for correct password
     // const validpass = await bcrypt.compare(req.body.password, user.password)
@@ -56,12 +72,12 @@ router.post("/login",async (req, res)=>{
     // if(!user.password ==req.body.password) return res.status(400).send("password is wrong !");
     
     // Create and assign a tocken
-    console.log(process.env.JWT_KEY);
+    // console.log(process.env.JWT_KEY);
     const token = jwt.sign({_id:user._id}, process.env.JWT_KEY,{
         expiresIn: 86400 // expires in 24 hours
       });
-    res.header('auth-token',token);
-    return res.send("Login Success.. !!");
+    
+    return res.json({'login':"Success", "auth-token":token});
 });
 
 module.exports = router;
