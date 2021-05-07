@@ -1,5 +1,22 @@
 const mongoose = require('mongoose');
 
+const newTopicScheme = new mongoose.Schema({
+    name :{
+        type:String,
+        required:true
+    },
+    cells : {
+        type:Array,
+        default : [{
+            "cell_layout":{
+                "cell_type":"Markdown",
+                "code_lan":"markdown"
+              },
+            "source":"Add Edit Content Here....!"
+          }]
+    }
+});
+
 const userScheme = new mongoose.Schema({
     google_id:{
         type: String,
@@ -31,4 +48,6 @@ const userScheme = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('User', userScheme, "users");
+
+module.exports.newTopic = mongoose.model('new_topic', newTopicScheme,"topics");
+module.exports.User = mongoose.model('User', userScheme, "users");

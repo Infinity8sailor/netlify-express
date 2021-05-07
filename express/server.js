@@ -15,6 +15,9 @@ const dot = require('dotenv');
 dot.config();
 
 const routerAuth = require('./routes/auth');
+const newTopicRouter = require('./routes/docs/newTopic');
+const delTopicRouter = require('./routes/docs/delTopic');
+const updateTopicRouter = require('./routes/docs/update');
 const {google_auth, jwt_auth} = require('./routes/verifyToken');
 
 const dbName = 'docs-io';
@@ -23,35 +26,24 @@ const url_doc = '***REMOVED***docs-io';
 const router = express.Router();
 mongoose.connect(url_doc,{ useUnifiedTopology: true }, ()=>console.log("connected to db"));
 
-const empty_topic = {
-    "name":"empty_topic",
-    "color":"red",
-    "cells":[{
-        "cell_layout":{
-            "cell_type":"Markdown",
-            "code_lan":"markdown"
-          },
-        "source":"Add Edit Content Here....!"
-      }]
-    };
-
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 app.use(logger('dev'));
-app.use('/.netlify/functions/server', router);  // path must route to lambda
-app.all('/', function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "https://docs-io.netlify.app/");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  next()
-});
+// app.all('/', function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "https://docs-io.netlify.app/");
+//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
+//   next()
+// });
 // app.use('/', (req, res) => res.sendFile(path.join(__dirname, '../index.html')));
 
+app.use('/.netlify/functions/server', router);  // path must route to lambda
 app.use('/.netlify/functions/server', routerAuth);
-app.get('/api/user', (req,res)=>{
-  res.send("hello there");
-});
+app.use('/.netlify/functions/server/docs/newtopic', newTopicRouter);
+app.use('/.netlify/functions/server/docs/del', delTopicRouter);
+app.use('/.netlify/functions/server/docs/update', updateTopicRouter);
+
 router.get('/', (req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/html' });
   res.write('<h1>Hello from Express.js!!!!!!!!</h1>');
@@ -88,6 +80,26 @@ router.post("/docs/topics/", jwt_auth, function (req, res) {
     });
     // update_data(req.body);
   });
+router.get("/guest/topicList", (req,res)=> {
+  MongoClient.connect(url, function(err, client) {
+    if (!err) {
+      // Get db
+      const db = client.db(dbName);
+      // Get collection
+      const collection = db.collection('topics');
+      // Find all documents in the collection
+      collection.find({"info":"Topics"}).toArray(function(err, todos) {
+          if (!err) {
+            // send output back
+            res.send(todos[0].topics);
+            console.log(todos[0].topics);
+          }
+        });
+        // close db client
+        client.close();
+      }
+    });
+});
 
 router.post("/docs/topicList/", jwt_auth, function (req, res) {
     console.log("res/req",req.body);
@@ -102,121 +114,11 @@ router.post("/docs/topicList/", jwt_auth, function (req, res) {
         collection.find({"email":req.body.user}).toArray(function(err, todos) {
             if (!err) {
               // send output back
-
+              if (todos[0] == undefined) return res.status(500).send("doesnt exist");
               res.send(todos[0].topics);
               console.log(todos[0].topics);
             }
           });
-          // close db client
-          client.close();
-        }
-      });
-      // update_data(req.body);
-    });
-  
-router.post("/docs/newtopic/", function (req, res) {
-    console.log("res/req",res,req.body);
-    //   res.sendFile('public/topics/'+req.body.fileName+'.json',{ root: __dirname+ '/..' });
-    MongoClient.connect(url, function(err, client) {
-      if (!err) {
-        // Get db
-        const db = client.db(dbName);
-        // Get collection
-        const collection = db.collection('topics');
-        // Find all documents in the collection
-        var empty_topic_data = empty_topic;
-        empty_topic_data.name = req.body.new_topic[0].toUpperCase()+ req.body.new_topic.slice(1);
-        if (true){
-            collection.insertMany([empty_topic_data], function(err, result) {
-                  assert.equal(err, null); 
-                  assert.equal(1, result.result.n);
-                  assert.equal(1, result.ops.length);
-                  console.log("Inserted 1 document into the collection");
-            });
-            collection.updateOne(
-              { "_id": ObjectId("608a66766f081e23647d21cd") },
-            {
-                $push: {
-                    topics: {
-                    $each: [empty_topic_data.name],
-                    $position: -1
-                }
-            }
-        }, function(err, result) {
-              assert.equal(err, null);
-              assert.equal(1, result.result.n);
-              console.log("Updated the document with the field a equal to 2");
-              res.send("Success");
-            });
-        };
-          // close db client
-          client.close();
-        }
-      });
-    });
-
-router.post("/docs/update/", function (req, res) {
-      console.log("res/req",res,req.body);
-      //   res.sendFile('public/topics/'+req.body.fileName+'.json',{ root: __dirname+ '/..' });
-      MongoClient.connect(url, function(err, client) {
-        if (!err) {
-          // Get db
-          const db = client.db(dbName);
-          // Get collection
-          const collection = db.collection('topics');
-          // Find all documents in the collection
-
-          var topic = req.body;
-          if (true){
-              var topic_id = topic._id;
-              delete topic["_id"];
-              collection.updateOne(
-                { "_id": ObjectId(topic_id)}, { $set: topic },
-                function(err, result) {
-                assert.equal(err, null);
-                assert.equal(1, result.result.n);
-                console.log("Updated the document with the field a equal to 2");
-                callback(result);
-              });
-          };
-            // close db client
-            client.close();
-          }
-        });
-        // update_data(req.body);
-      });
-      
-router.post("/docs/del/", function (req, res) {
-    console.log("res/req",res,req.body);
-    //   res.sendFile('public/topics/'+req.body.fileName+'.json',{ root: __dirname+ '/..' });
-    MongoClient.connect(url, function(err, client) {
-      if (!err) {
-        // Get db
-        const db = client.db(dbName);
-        // Get collection
-        const collection = db.collection('topics');
-        // Find all documents in the collectio  
-        var topic = req.body.topic_name;
-
-        collection.deleteOne({ name : topic}, function(err, result) {
-          assert.equal(err, null);
-          assert.equal(1, result.result.n);
-          console.log("Removed the document with the field a equal to 3");
-          // callback(result);
-        });
-        
-        collection.updateOne(
-          { "_id": ObjectId("608a66766f081e23647d21cd") },
-        {
-            $pull: {
-                topics: topic
-        }
-    }, function(err, result) {
-          assert.equal(err, null);
-          assert.equal(1, result.result.n);
-          console.log("Updated the document with the field a equal to 2");
-          res.send("Success");
-        });
           // close db client
           client.close();
         }
