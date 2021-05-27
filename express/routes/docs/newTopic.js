@@ -44,9 +44,9 @@ router.post("/",jwt_auth, (req, res) => {
                         assert.equal(err, null);
                         assert.equal(1, result.result.n);
                         console.log("Updated the document with the field a equal to 2",);
-                        res.send("Success");
+                        res.header({Status: "Success"});
+                        res.send(result.result);
                       });
-            // });
         };
           // close db client
           client.close();
