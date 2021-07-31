@@ -18,6 +18,7 @@ const routerAuth = require('./routes/auth');
 const newTopicRouter = require('./routes/docs/newTopic');
 const delTopicRouter = require('./routes/docs/delTopic');
 const updateTopicRouter = require('./routes/docs/update');
+const searchRouter = require('./routes/search/search');
 const {google_auth, jwt_auth} = require('./routes/verifyToken');
 
 const dbName = 'docs-io';
@@ -43,6 +44,7 @@ app.use('/.netlify/functions/server', routerAuth);
 app.use('/.netlify/functions/server/docs/newtopic', newTopicRouter);
 app.use('/.netlify/functions/server/docs/del', delTopicRouter);
 app.use('/.netlify/functions/server/docs/update', updateTopicRouter);
+app.use('/.netlify/functions/server/search', searchRouter);
 
 router.get('/', (req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/html' });
