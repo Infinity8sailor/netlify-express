@@ -7,8 +7,7 @@ const {newTopic} = require('../../modal/schemes');
 const {google_auth, jwt_auth} = require('../verifyToken');
 
 const dbName = 'docs-io';
-const url = '***REMOVED***test'; 
-const url_doc = '***REMOVED***docs-io'; 
+const url = process.env.Mongo + "test";
 
 router.post("/",jwt_auth, (req, res) => {
     // console.log("res/req",res,req.body);

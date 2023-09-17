@@ -6,8 +6,7 @@ const assert = require('assert');
 const {google_auth, jwt_auth} = require('../verifyToken');
 
 const dbName = 'docs-io';
-const url = '***REMOVED***test'; 
-const url_doc = '***REMOVED***docs-io'; 
+const url = process.env.Mongo + "test";
 
 router.post("/",jwt_auth, (req, res) => {
     MongoClient.connect(url, function(err, client) {

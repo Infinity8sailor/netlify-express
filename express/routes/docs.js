@@ -7,7 +7,7 @@ const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 
 const dbName = 'docs-io';
-const url = '***REMOVED***test';
+const url = process.env.Mongo + "test";
 
 
 // const data = require('./../data/public/World.json');
