@@ -15,17 +15,19 @@ const dot = require('dotenv');
 dot.config();
 
 const routerAuth = require('./routes/auth');
+
 const newTopicRouter = require('./routes/docs/newTopic');
 const delTopicRouter = require('./routes/docs/delTopic');
 const updateTopicRouter = require('./routes/docs/update');
 const searchRouter = require('./routes/search/search');
+
 const {google_auth, jwt_auth} = require('./routes/verifyToken');
 
 const dbName = 'docs-io';
-const url = '***REMOVED***test'; 
-const url_doc = '***REMOVED***docs-io'; 
+const url = process.env.mongo + "test";
+const url_doc = process.env.mongo + dbName; 
 const router = express.Router();
-mongoose.connect(url_doc,{ useUnifiedTopology: true }, ()=>console.log("connected to db"));
+mongoose.connect(url_doc,{   useNewUrlParser: true, useUnifiedTopology: true }, ()=>console.log("connected to db"));
 
 app.use(bodyParser.json());
 app.use(express.json());
@@ -58,6 +60,7 @@ router.get('/test',jwt_auth, (req, res) => {
 });
 router.get('/another', (req, res) => res.json({ route: req.originalUrl }));
 router.post('/', (req, res) => res.json({ postBody: req.body }));
+
 
 router.post("/guest/topics/", function (req, res) {
   console.log("from gest topics",req.body);
